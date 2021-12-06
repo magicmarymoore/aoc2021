@@ -14,7 +14,7 @@ class binary():
     def countEach(self, string : str, index : int) -> None:
         if (string[index] == '0'): self.zeros += 1
         elif (string[index] == '1'): self.ones += 1
-    
+         
     def createGamma(self) -> None:
         if(self.ones > self.zeros): self.gamma += '1'
         elif(self.zeros > self.ones): self.gamma += '0'
@@ -36,23 +36,98 @@ class binary():
         
         return inverse
 
-    def oxygenBit(self):
+    def oxygenBit(self) -> None:
+        
         if(self.ones > self.zeros or self.ones == self.zeros): self.oxy += '1'
         elif(self.zeros > self.ones): self.oxy += '0'
 
         self.ones = 0 
         self.zeros = 0
 
-    def co2Bit(self):
+    def co2Bit(self) -> None:
         if(self.ones > self.zeros or self.ones == self.zeros): self.co2 += '0'
         elif(self.zeros > self.ones): self.co2 += '1'
 
         self.ones = 0 
         self.zeros = 0
 
+class partTwo():
 
+    def __init__(self, inData):
+        self.oxygen = inData
+        self.CO2 = inData
+        
+    def keepMostCommonOxy(self, index : int) -> None:
+        values = {'1' : 0, '0' : 0}
+
+        for x in self.oxygen:
+            values[x[index]] += 1
+
+        mostCommon = ('1' if values['1'] >= values['0'] else '0')
+        
+        toReturn = []
+        
+        for x in range(0, len(self.oxygen)):
+            if self.oxygen[x][index] != mostCommon:
+                toReturn.append(self.oxygen[x])
+
+        self.oxygen = toReturn
+    
+    def KeepLeastCommonCO2(self, index : int) -> None:
+        values = {'1' : 0, '0' : 0}
+
+        for x in self.CO2:
+            values[x[index]] += 1
+
+        leastCommon = ('1' if values['1'] < values['0'] else '0')
+
+        toReturn = []
+        
+        for x in range(0, len(self.CO2)):
+            if self.CO2[x][index] != leastCommon:
+                toReturn.append(self.CO2[x])
+
+        self.CO2 = toReturn
+
+    def getFinalOxyVal(self) -> int:
+        index = 0 
+        while (len(self.oxygen) > 1):
+            self.keepMostCommonOxy(index)
+            index += 1
+
+        return self.binaryToDecimal(self.oxygen[0])
+
+    def getFinalCO2Val(self) -> int:
+        index = 0
+        while (len(self.CO2) > 1):
+            self.KeepLeastCommonCO2(index)
+            index += 1
+        
+        return self.binaryToDecimal(self.CO2[0])
+        
+    def binaryToDecimal(self, binary : str) -> int:
+        total = 0
+        binary = list(binary)
+        binary.reverse()
+        for index, digit in enumerate(binary):
+            total += (2 ** index) * int(digit)
+
+        return total
+
+    def getFinalVal(self) -> int:
+        return self.getFinalCO2Val() * self.getFinalOxyVal()
+            
+oxyData = data
+
+partTwoStatic = partTwo(oxyData)
+
+print(partTwoStatic.getFinalVal())
+
+
+"""
 gamma = binary()
 
+# part 1
 y = 0
 
 while (y < len(data[0])):
@@ -69,20 +144,20 @@ print(epsilonVal)
 print(gammaVal*epsilonVal)
 
 
-oxyData = data
+# part 2
+'''oxyData = data
 
 index = 0
-while (len(oxyData) > 1):
+while (len(oxyData) > 1): 
     print(index)
-    for x in oxyData:
-        gamma.countEach(x, index)
+    gamma.mostCommon()
     gamma.oxygenBit()
     for y in oxyData:
         if(y[index] != gamma.oxy[index]):
-            print("removing stuff...") 
+            #print("removing stuff...") 
             oxyData.remove(y)
-            print(oxyData)
+            #print(oxyData)
     index += 1
 
-print(oxyData)
-    
+print(oxyData)'''
+"""
